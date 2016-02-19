@@ -1,10 +1,11 @@
 package miniMap;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
-public class MiniMap {
+public class DetailArea {
 	private int x;
 	private int y;
 	private int width;
@@ -12,11 +13,12 @@ public class MiniMap {
 	private PGraphics graphics;
 	private PApplet parent;
 	private PImage background;
+	private float rotationAngle;
 
-	public MiniMap() {
+	public DetailArea() {
 	}
 
-	public MiniMap(PApplet parent, int x, int y, int width, int height) {
+	public DetailArea(PApplet parent, int x, int y, int width, int height) {
 		this.parent = parent;
 		this.x = x;
 		this.y = y;
@@ -29,12 +31,19 @@ public class MiniMap {
 		graphics.beginDraw();
 		graphics.background(255);
 		graphics.stroke(0);
+		graphics.imageMode(PConstants.CENTER);
+		graphics.translate(width / 2, height / 2);
+		graphics.rotate(rotationAngle);
 		graphics.image(getBackground(), 0, 0, width, height);
 		graphics.endDraw();
 	}
 
 	public void show() {
 		parent.image(graphics, x, y);
+	}
+
+	public void rotate(float angle) {
+		rotationAngle += angle;
 	}
 
 	public int getX() {
