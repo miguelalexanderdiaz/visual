@@ -2,36 +2,44 @@ package flock;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-import processing.core.PVector;
 
 public class TestingTexture extends PApplet {
-	private PImage particleTexture;
-	TuringMorph2 t = new TuringMorph2();
-	
+	private static final int HEIGHT = 360;
+	private static final int WIDTH = 640;
+	private PImage particleTexture1;
+	private PImage particleTexture2;
+	TuringMorph turingMorph;
+
 	@Override
 	public void settings() {
-		size(640, 360);
+		size(WIDTH, HEIGHT);
 	}
-	
+
 	@Override
 	public void setup() {
-		PVector particlesOrigin = new PVector(width / 2, height - 60);
-		t.initComponents();
-		t.okButtonActionPerformed(null);
+		turingMorph = new TuringMorph(100);
+
+		particleTexture1 = getRandomTexture();
+		particleTexture2 = getRandomTexture();
 	}
-	
+
 	@Override
 	public void draw() {
 		background(0);
-		
-		if (t.getVisualizer().getImage2() != null) {
-			particleTexture = t.getVisualizer().getImage2();
-			image(particleTexture, 0, 0, 640, 360);
-		}
+
+		image(particleTexture1, 0, 0);
+		image(particleTexture2, 200, 0);
 	}
-	
+
+	public PImage getRandomTexture() {
+		float ca = random(0, 20);
+		float cb = random(0, 20);
+
+		return turingMorph.getSquareTexture(2000, ca, cb);
+	}
+
 	public static void main(String args[]) {
 		PApplet.main(TestingTexture.class.getName());
 	}
-	
+
 }
