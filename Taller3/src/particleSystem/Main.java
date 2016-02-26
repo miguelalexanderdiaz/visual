@@ -20,7 +20,7 @@ public class Main extends PApplet {
 		PImage particlesTexture = loadImage("./img/texture.png");
 		PVector particlesOrigin = new PVector(width / 2, height - 60);
 
-		particleSystem = new ParticleSystem(0, particlesOrigin, particlesTexture);
+		particleSystem = new ParticleSystem(2, particlesOrigin, particlesTexture);
 	}
 	
 	@Override
