@@ -3,18 +3,27 @@ package flock;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import processing.core.PImage;
+import processing.core.PShape;
 import processing.core.PVector;
+import remixlab.dandelion.core.Camera;
 import remixlab.proscene.Scene;
 
 public class Acuario extends PApplet {
 
-	Flock flock;
+	Flock flock1;
+	Flock flock2;
 	Scene scene;
-	int width = 800;
-	int height = 600;
-	int iteration = 0;
-	float radius=180f;
+	PImage particleTexture1;
+	PImage particleTexture2;
+	PShape shape1;
 
+	int r = 20;
+	TuringMorph turingMorph;
+	int width = 1200;
+	int height = 700;
+	int iteration = 0;
+	float radius = 1600;
 
 	public void settings() {
 		size(width, height, P3D);
@@ -22,24 +31,49 @@ public class Acuario extends PApplet {
 	}
 
 	public void setup() {
+
 		scene = new Scene(this);
-		flock = new Flock();
+		Camera cam = new Camera(scene);
+		cam.setSceneRadius(radius+300);
+		scene.setCamera(cam);
+		turingMorph = new TuringMorph(200);
+		particleTexture1 = getRandomTexture();
+		particleTexture2 = getRandomTexture();
+		shape1 = generateTexturedBoid(r, particleTexture1);
+		PShape shape2 = generateTexturedBoid(r, particleTexture2);
+		
+		flock1 = new Flock();
+		flock2 = new Flock();
+
 		// Add an initial set of boids into the system
 		for (int i = 0; i < 150; i++) {
-			flock.addBoid(new Boid(width / 2, height / 2, height / 2));
+			flock1.addBoid(new Boid(random(-radius/2, radius/2), random(-radius/2, radius/2), random(-radius/2, radius/2),
+					shape1));
+		}
+		for (int i = 0; i < 300; i++) {
+			flock2.addBoid(new Boid(random(-radius/2, radius/2), random(-radius/2, radius/2), random(-radius/2, radius/2),
+					shape2));
 		}
 
 	}
 
 	public void draw() {
+
 		background(50);
-		flock.run();
+		flock1.run();
+		flock2.run();
+		image(particleTexture1, 0, 0);
 		
+		
+		noFill();
+		stroke(59);
+		sphere(radius);
+
 	}
 
 	// Add a new boid into the System
 	public void mousePressed() {
-		flock.addBoid(new Boid(0, 0, 0));
+		flock1.addBoid(new Boid(0, 0, 0, shape1));
 	}
 
 	// The Flock (a list of Boid objects)
@@ -71,11 +105,13 @@ public class Acuario extends PApplet {
 		PVector location;
 		PVector velocity;
 		PVector acceleration;
+		PShape shape;
+
 		float r;
 		float maxforce; // Maximum steering force
 		float maxspeed; // Maximum speed
 
-		Boid(float x, float y, float z) {
+		Boid(float x, float y, float z, PShape shape) {
 			acceleration = new PVector(0, 0, 0);
 
 			// This is a new PVector method not yet implemented in JS
@@ -87,11 +123,14 @@ public class Acuario extends PApplet {
 			float phi = random(TWO_PI);
 			float theta = random(TWO_PI);
 
-			velocity = new PVector(rho*cos(theta)*sin(phi), rho*sin(theta)*sin(phi), rho*cos(phi));
+			velocity = new PVector(rho * cos(theta) * sin(phi), rho
+					* sin(theta) * sin(phi), rho * cos(phi));
 			location = new PVector(x, y, z);
-			r = 2.0f;
-			maxspeed = 2;
-			maxforce = 0.03f;
+			r = 20f;
+			maxspeed = 6;
+			maxforce = 0.5f;
+			this.shape = shape;
+
 		}
 
 		void run(ArrayList<Boid> boids) {
@@ -157,45 +196,42 @@ public class Acuario extends PApplet {
 
 		void render() {
 			// Draw a triangle rotated in the direction of velocity
-			float rho = sqrt(pow(velocity.x,2) + pow(velocity.y,2) );
-			float phi = acos(velocity.z/rho);
-			float theta = atan(velocity.y/velocity.x);
-			
-			//float theta = velocity.heading2D() + radians(90);
-			// heading2D() above is now heading() but leaving old syntax until
-			// Processing.js catches up
+			float velX=velocity.x*0.5f;
+			float velY=velocity.y*0.5f;
+			float velZ=velocity.z*0.5f;
+			/*
+			float rho = sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)+ pow(velocity.z,2));
+			float phi = atan(sqrt(pow(velocity.x, 2) + pow(velocity.y, 2))/velocity.z);
+			float theta = atan(velocity.y / velocity.x);
+			*/
+			float rho = sqrt(pow(velX, 2) + pow(velY, 2)+ pow(velZ,2));
+			float phi = atan(sqrt(pow(velX, 2) + pow(velY, 2))/velZ);
+			float theta = atan(velY / velX);
 
-			fill(200, 100);
-			stroke(255);
 			pushMatrix();
 			translate(location.x, location.y, location.z);
-			rotateX(rho*cos(theta)*sin(phi));
-			rotateY(rho*sin(theta)*sin(phi));
-			rotateZ(rho*cos(phi));
-			beginShape(TRIANGLES);
-			vertex(0, -r * 2);
-			vertex(-r, r * 2);
-			vertex(r, r * 2);
-			endShape();
+			rotateX(rho * cos(theta) * sin(phi));
+			rotateY(rho * sin(theta) * sin(phi));
+			rotateZ(rho * cos(phi));
+			shape(shape);
 			popMatrix();
 		}
 
 		// Wraparound
 		void borders() {
-			if (location.x < -radius)
-				location.x =  radius;
-			if (location.x > radius)
-				location.x = -radius;
 			
-			if (location.y < -radius)
-				location.y = radius;
-			if (location.y > radius)
-				location.y = -radius;
+			float magnitude=(radius-sqrt(pow(location.x,2)+pow(location.y,2)+pow(location.z,2)))*1.8f;		
+			/*
+			velocity.x-=location.x/(pow(magnitude,2));
+			velocity.y-=location.y/(pow(magnitude,2));
+			velocity.z-=location.z/(pow(magnitude,2));
+			*/
 			
-			if (location.z < -radius)
-				location.z = radius;
-			if (location.z > radius)
-				location.z = -radius;
+			acceleration.sub(new PVector(location.x/(pow(magnitude,2)),location.y/(pow(magnitude,2)),location.z/(pow(magnitude,2))));
+			
+
+			
+		
 		}
 
 		// Separation
@@ -242,7 +278,7 @@ public class Acuario extends PApplet {
 		// Alignment
 		// For every nearby boid in the system, calculate the average velocity
 		PVector align(ArrayList<Boid> boids) {
-			float neighbordist = 50;
+			float neighbordist = 70;
 			PVector sum = new PVector(0, 0, 0);
 			int count = 0;
 			for (Boid other : boids) {
@@ -274,7 +310,7 @@ public class Acuario extends PApplet {
 		// For the average location (i.e. center) of all nearby boids, calculate
 		// steering vector towards that location
 		PVector cohesion(ArrayList<Boid> boids) {
-			float neighbordist = 50;
+			float neighbordist = 5;
 			PVector sum = new PVector(0, 0, 0); // Start with empty vector to
 												// accumulate all locations
 			int count = 0;
@@ -292,6 +328,40 @@ public class Acuario extends PApplet {
 				return new PVector(0, 0, 0);
 			}
 		}
+	}
+
+	public PImage getRandomTexture() {
+		float ca = random(0, 10);
+		float cb = random(0, 10);
+
+		return turingMorph.getSquareTexture(2000, ca, cb);
+	}
+
+	public PShape generateTexturedBoid(float r, PImage texture) {
+		PShape sh = createShape();
+		
+		 sh.beginShape(TRIANGLES); sh.texture(texture); sh.vertex(0, -r *
+		 2,0,0); sh.vertex(-r, r * 2,texture.width,0); sh.vertex(r, r *
+		 2,texture.width/2,texture.height);
+		  
+		 sh.endShape(CLOSE);
+	
+		/*
+		sh.beginShape(TRIANGLE_STRIP);
+		sh.noStroke();
+		sh.texture(texture);
+		sh.vertex(2 * r, 3.5f * r, 0, texture.height / 2);
+		sh.vertex(3 * r, 4.5f * r, texture.width / 4, 0);
+		sh.vertex(3 * r, 2.5f * r, texture.width / 4, texture.height);
+		sh.vertex(5 * r, 4 * r, 0, texture.width / 2, 0);
+		sh.vertex(5 * r, 3 * r, texture.width / 2, texture.height);
+		sh.vertex(5.5f * r, 3.5f * r, 3 * texture.width / 4, texture.height / 2);
+		sh.vertex(7 * r, 4.5f * r, texture.width, 0);
+		sh.vertex(7 * r, 2.5f * r, texture.width, texture.height);
+		sh.endShape(CLOSE);
+		*/
+		return sh;
+
 	}
 
 	public static void main(String args[]) {
