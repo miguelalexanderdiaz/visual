@@ -32,8 +32,8 @@ public class TestingTexture extends PApplet {
 	}
 
 	public PImage getRandomTexture() {
-		float ca = random(0, 20);
-		float cb = random(0, 20);
+		float ca = random(0, 10);
+		float cb = random(0, 10);
 
 		return turingMorph.getSquareTexture(2000, ca, cb);
 	}
