@@ -76,6 +76,7 @@ public class Test extends PApplet {
 		auxScene.endDraw();
 		auxCanvas.endDraw();
 		image(auxCanvas, 0, 360);
+	
 	}
 
 	public void mainDrawing(Scene s) {
