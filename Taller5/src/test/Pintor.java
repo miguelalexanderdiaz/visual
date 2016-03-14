@@ -1,26 +1,25 @@
+package test;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-
 import processing.core.PGraphics;
 import processing.core.PVector;
-import utilidades.Vector3Ds;
 
 /**
  * @author Sebastian
- * 
+ * 		
  */
 public class Pintor {
 	public static int NO_PRUEBAS = 0;
 	public static int Z_COMPARATOR = 1;
 	public static int ESPACIOS_PRUEBAS = 2;
 	public static int TODAS_PRUEBAS = 3;
-
+	
 	private Pintor() {
 	};
-
+	
 	public static void dibujarPlanos(PGraphics canvas, ArrayList<Triangle3D> planos, int pruebas) {
 		System.out.println("INICIAR ORDEN");
 		try {
@@ -39,11 +38,11 @@ public class Pintor {
 			caja.drawOn(canvas);
 		}
 	}
-
+	
 }
 
 class zComparator implements Comparator<Triangle3D> {
-
+	
 	@Override
 	public int compare(Triangle3D trasero, Triangle3D delantero) {
 		// Ordenar del mayor al menor valor de z
@@ -53,42 +52,42 @@ class zComparator implements Comparator<Triangle3D> {
 		}
 		return result;
 	}
-
+	
 }
 
 class ChairWeightComparator implements Comparator<Triangle3D> {
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public int compare(Triangle3D trasero, Triangle3D delantero) {
 		// Uso de las pruebas del algoritmo del pintor
-		// 1º Prueba
+		// 1ï¿½ Prueba
 		if (traslape(trasero, delantero) == false) {
-			System.out.println(trasero.name + " 1º NO TRASLAPE " + delantero.name);
+			System.out.println(trasero.name + " 1ï¿½ NO TRASLAPE " + delantero.name);
 			return 0;
 		}
-		// 2º Prueba:
+		// 2ï¿½ Prueba:
 		else if (detrasDe(trasero, delantero) == trasero.getPoints().length) {
-			System.out.println("2° " + trasero.name + " esta ATRAS de " + delantero.name);
+			System.out.println("2ï¿½ " + trasero.name + " esta ATRAS de " + delantero.name);
 			return -1;
 		}
-		// 3º Prueba
+		// 3ï¿½ Prueba
 		else if (enfreteDe(trasero, delantero) == true) {
-			System.out.println(trasero.name + " 3º esta al FRENTE de " + delantero.name);
+			System.out.println(trasero.name + " 3ï¿½ esta al FRENTE de " + delantero.name);
 			return -1;
 		}
 		System.out
 				.println("Fallan pruebas => " + delantero.name + " esta atras de " + trasero.name);
 		return 1;
 	}
-
+	
 	/**
-	 * 1º Traslape, prueba del algoritmo del pintos
-	 * 
+	 * 1ï¿½ Traslape, prueba del algoritmo del pintos
+	 *
 	 * @param a
 	 * @param b
 	 * @return
@@ -108,10 +107,10 @@ class ChairWeightComparator implements Comparator<Triangle3D> {
 		}
 		return false;
 	}
-
+	
 	/**
-	 * 2º Prueba Numero de puntos de tA que estan detras de tB
-	 * 
+	 * 2ï¿½ Prueba Numero de puntos de tA que estan detras de tB
+	 *
 	 * @param tA
 	 * @param tB
 	 * @return
@@ -130,7 +129,7 @@ class ChairWeightComparator implements Comparator<Triangle3D> {
 		}
 		return n;
 	}
-
+	
 	private boolean enfreteDe(Triangle3D tA, Triangle3D tB) {
 		if (this.detrasDe(tA, tB) == 0) {
 			return false;
@@ -146,10 +145,10 @@ class ChairWeightComparator implements Comparator<Triangle3D> {
 		}
 		return true;
 	}
-
+	
 	/**
-	 * Ángulos entre la normal de A y los puntos de B
-	 * 
+	 * ï¿½ngulos entre la normal de A y los puntos de B
+	 *
 	 * @param tA
 	 * @param tB
 	 * @param negarNormal
@@ -166,11 +165,11 @@ class ChairWeightComparator implements Comparator<Triangle3D> {
 			Vector3D vector = Vector3Ds.getVector3D(PVector.sub(point, tA.getPoints()[0]));
 			float angle;
 			if (vector.getNorm() == 0) {
-				// 90° por que esta en el plano
+				// 90ï¿½ por que esta en el plano
 				angle = (float) Math.toRadians(90);
 			} else {
 				angle = (float) Vector3D.angle(normal, vector);
-
+				
 			}
 			anglesArray[i] = angle;
 		}
