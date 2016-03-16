@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import remixlab.dandelion.core.Camera;
+import remixlab.dandelion.geom.Vec;
 import remixlab.proscene.Scene;
 
 //HSR
@@ -50,7 +53,7 @@ public class HiddenSurfaceRemoval extends PApplet {
 			for (int j = 0; j < numy; j++) {
 				int x = 20 * (i - numx / 2);
 				int y = 20 * (j - numy / 2);
-				shapes.addAll(createBox(x, y, 0, 10, random.nextInt(numx+numy)+5));
+				shapes.addAll(createBox(x, y, 0, 10, random.nextInt(numx + numy) + 5));
 			}
 		}
 
@@ -140,32 +143,32 @@ public class HiddenSurfaceRemoval extends PApplet {
 
 		auxScene.endDraw();
 		auxScene.pg().endDraw();
-		image(auxScene.pg(), auxScene.originCorner().x(), auxScene
-				.originCorner().y());
+		image(auxScene.pg(), auxScene.originCorner().x(), auxScene.originCorner().y());
 	}
 
-	public void mainDrawing(Scene s) {
-		s.pg().background(0);
+	public void mainDrawing(Scene scene) {
+		scene.pg().background(0);
 
 		for (PShape shape : shapes) {
 			switch (hiddeSurfaceMethod) {
 			case "backFace":
 				if (backFaceCulling(shape)) {
-					s.pg().shape(shape);
+					scene.pg().shape(shape);
 				}
 				break;
 			case "viewFrustrum":
 				if (viewFrustrumCulling(shape)) {
-					s.pg().shape(shape);
+					scene.pg().shape(shape);
 				}
+
 				break;
 			case "mixed":
-				if(backFaceCulling(shape)&&viewFrustrumCulling(shape)){
-					s.pg().shape(shape);
+				if (backFaceCulling(shape) && viewFrustrumCulling(shape)) {
+					scene.pg().shape(shape);
 				}
 				break;
 			default:
-				s.pg().shape(shape);
+				scene.pg().shape(shape);
 			}
 		}
 
@@ -173,30 +176,28 @@ public class HiddenSurfaceRemoval extends PApplet {
 
 	// Back-face culling
 	public Boolean backFaceCulling(PShape shape) {
-
-		// ArrayList<Vec> normals = new ArrayList<>();
 		float vertexNumber = shape.getVertexCount();
 		PVector avg = new PVector(0, 0, 0);
+
 		for (int i = 0; i < vertexNumber; i++) {
-			avg.add(shape.getNormal(i));
-			// normals.add(Scene.toVec(shape.getNormal(i)));
+			avg.add(shape.getVertex(i));
 		}
+
 		avg.div(vertexNumber);
 
-		return scene.camera().isFaceFrontFacing(Scene.toVec(avg),
-				Scene.toVec(shape.getNormal(0)));
-		// return scene.camera().isConeFrontFacing(Scene.toVec(avg), normals);
+		return scene.camera().isFaceFrontFacing(Scene.toVec(avg), Scene.toVec(shape.getNormal(0)));
 	}
 
 	// View Frustrum culling
 	public Boolean viewFrustrumCulling(PShape shape) {
 		float vertexNumber = shape.getVertexCount();
+
 		for (int i = 0; i < vertexNumber; i++) {
-			if(scene.eye().isPointVisible(Scene.toVec(shape.getVertex(i))))
+			if (scene.eye().isPointVisible(Scene.toVec(shape.getVertex(i))))
 				return true;
 		}
-		return false;
 
+		return false;
 	}
 
 	public void handleMouse() {
@@ -215,6 +216,49 @@ public class HiddenSurfaceRemoval extends PApplet {
 
 	public static void main(String[] args) {
 		PApplet.main(HiddenSurfaceRemoval.class.getCanonicalName());
+	}
+
+	class OctreeNode {
+		Vec p1, p2;
+		OctreeNode child[];
+		int level;
+
+		OctreeNode(Vec P1, Vec P2) {
+			p1 = P1;
+			p2 = P2;
+			child = new OctreeNode[8];
+		}
+
+		public void draw(PGraphics pg) {
+		}
+
+		public void drawIfAllChildrenAreVisible(PGraphics pg, Camera camera) {
+			Camera.Visibility vis = camera.boxVisibility(p1, p2);
+			if (vis == Camera.Visibility.VISIBLE)
+				draw(pg);
+			else if (vis == Camera.Visibility.SEMIVISIBLE)
+				if (child[0] != null)
+					for (int i = 0; i < 8; ++i)
+						child[i].drawIfAllChildrenAreVisible(pg, camera);
+				else
+					draw(pg);
+		}
+
+		public void buildBoxHierarchy(int l) {
+			level = l;
+			Vec middle = Vec.multiply(Vec.add(p1, p2), 1 / 2.0f);
+			
+			for (int i = 0; i < 8; ++i) {
+				// point in one of the 8 box corners
+				Vec point = new Vec(((i & 4) != 0) ? p1.x() : p2.x(), ((i & 2) != 0) ? p1.y() : p2.y(),
+						((i & 1) != 0) ? p1.z() : p2.z());
+				if (level > 0) {
+					child[i] = new OctreeNode(point, middle);
+					child[i].buildBoxHierarchy(level - 1);
+				} else
+					child[i] = null;
+			}
+		}
 	}
 
 }

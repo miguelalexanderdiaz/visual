@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;s&apos; in &apos;processing.HiddenSurfaceRemoval.mainDrawing(...)&apos; to &apos;scene&apos;&#x0D;&#x0A;- Original project: &apos;Taller4&apos;&#x0D;&#x0A;- Original element: &apos;processing.HiddenSurfaceRemoval.mainDrawing(Scene).s&apos;&#x0D;&#x0A;- Renamed element: &apos;s&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;s&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;processing{HiddenSurfaceRemoval.java[HiddenSurfaceRemoval~mainDrawing~QScene;@s!3609!3615!3615!3615!QScene;!0!true" name="scene" references="true" stamp="1458139840629" version="1.0"/>
+</session>

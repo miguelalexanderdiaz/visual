@@ -33,7 +33,7 @@ public class Test extends PApplet {
 	Vec normalZNeg = new Vec(0, 0, -1);
 	ArrayList<Vec> normals;
 
-	boolean facebyface = true;
+	boolean facebyface = false;
 
 	public void settings() {
 		size(640, 720, P3D);
