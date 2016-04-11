@@ -25,16 +25,19 @@ public class Clase extends PApplet {
 		shader = loadShader("shader/frag2.glsl", "shader/vertex1.glsl");
 		img = loadImage("img/w.jpg");
 		cp5 = new ControlP5(this);
-		cp5.addSlider("mySlider").setPosition(20, 20).setSize(200, 20);
-		cp5.addButton("myButton").setPosition(20, 60).setSize(100, 40);
+		cp5.setAutoDraw(false);
+		cp5.addSlider("s").setPosition(20, 20).setSize(200, 20).setRange(0, 100).setValue(1);
 	}
 
 	@Override
 	public void draw() {
 		background(0);
+
+
 		beginShape(QUAD);
 		shader(shader);
 		shader.set("offset", offset);
+		shader.set("A", cp5.getValue("s"));
 		offset += 0.1;
 
 		texture(img);
@@ -48,6 +51,11 @@ public class Clase extends PApplet {
 		//// fill(0,0,255);
 		vertex(100, 0, 0, 100);
 		endShape();
+
+		resetShader();
+		scene.beginScreenDrawing();
+		cp5.draw();
+		scene.endScreenDrawing();
 	}
 
 	public static void main(String args[]) {
