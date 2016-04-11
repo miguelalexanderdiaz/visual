@@ -29,8 +29,6 @@ public class Splines extends PApplet {
 	@Override
 	public void setup() {
 		scene = new Scene(this);
-		// scene.setVisualHints(scene.AXES);
-
 		scene.setVisualHints(scene.PICKING);
 		interactiveFrames = new ArrayList<>();
 		addInteractiveFrame(-40, 0);
@@ -60,7 +58,7 @@ public class Splines extends PApplet {
 		double x[] = new double[interactiveFrames.size()];
 		double y[] = new double[interactiveFrames.size()];
 		double z[] = new double[interactiveFrames.size()];
-		float zmax = 1;
+		float zmax = 0;
 		float zmin = 0;
 		
 		for (int j = 0; j < interactiveFrames.size(); j++) {
@@ -99,6 +97,7 @@ public class Splines extends PApplet {
 	}
 
 	private void drawRectangle(float x, float y, float z0, float z1) {
+		point(x, y, z0);
 		line(x, y, z0, x, y, z1);
 	}
 

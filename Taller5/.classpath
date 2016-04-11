@@ -12,5 +12,10 @@
 	<classpathentry kind="lib" path="../lib/jogl-all.jar"/>
 	<classpathentry kind="lib" path="../lib/proscene.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Estudiante/WS/lib/controlP5/library/controlP5.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Estudiante/WS/lib/controlP5/reference/controlP5/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
