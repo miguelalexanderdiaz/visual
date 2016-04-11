@@ -13,6 +13,7 @@ public class Clase extends PApplet {
 	PImage img;
 	float offset;
 	ControlP5 cp5;
+	private PImage im2;
 
 	@Override
 	public void settings() {
@@ -27,18 +28,20 @@ public class Clase extends PApplet {
 		cp5 = new ControlP5(this);
 		cp5.setAutoDraw(false);
 		cp5.addSlider("s").setPosition(20, 20).setSize(200, 20).setRange(0, 100).setValue(1);
+		im2 = loadImage("img/w2.jpg");
 	}
 
 	@Override
 	public void draw() {
 		background(0);
 
-
 		beginShape(QUAD);
 		shader(shader);
 		shader.set("offset", offset);
 		shader.set("A", cp5.getValue("s"));
 		offset += 0.1;
+		
+		
 
 		texture(img);
 		img.resize(100, 100);
