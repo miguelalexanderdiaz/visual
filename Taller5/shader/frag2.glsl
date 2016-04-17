@@ -1,6 +1,8 @@
 uniform float offset;
-uniform float f;
-uniform float A;
+uniform float fx;
+uniform float ax;
+uniform float fy;
+uniform float ay;
 uniform sampler2D texture;
 
 varying vec4 vertColor;
@@ -12,8 +14,8 @@ void main()
 	float coordY= vertTexCoord.y;
 	
 	if(coordY > 0.68){
-		coordX+= A * sin(coordY*10*3.1416+offset)/100;
-		coordY+= A * sin(coordX*2*3.1416+offset)/100;
+		coordX+= ax * sin(coordY*fx*3.1416+offset)/100;
+		coordY+= ay * sin(coordX*fy*3.1416+offset)/100;
 		coordY = 2 * 0.68 - coordY;
 	}
 	

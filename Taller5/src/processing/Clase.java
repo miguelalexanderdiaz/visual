@@ -11,7 +11,7 @@ public class Clase extends PApplet {
 	PShader shader;
 	PImage img;
 	float offset;
-	ControlP5 cp5;
+	ControlP5 sliders;
 	private int size;
 
 	@Override
@@ -24,10 +24,17 @@ public class Clase extends PApplet {
 		scene = new Scene(this);
 		shader = loadShader("shader/frag2.glsl", "shader/vertex1.glsl");
 		img = loadImage("img/w2.jpg");
-		cp5 = new ControlP5(this);
-		cp5.setAutoDraw(false);
-		cp5.addSlider("s").setPosition(20, 20).setSize(200, 20).setRange(0, 10).setValue(1);
 		size = 300;
+		initSliders();
+	}
+
+	private void initSliders() {
+		sliders = new ControlP5(this);
+		sliders.setAutoDraw(false);
+		sliders.addSlider("fx").setPosition(20, 20).setSize(200, 20).setRange(0, 10).setValue(1);
+		sliders.addSlider("fy").setPosition(20, 40).setSize(200, 20).setRange(0, 10).setValue(1);
+		sliders.addSlider("ax").setPosition(20, 60).setSize(200, 20).setRange(0, 10).setValue(1);
+		sliders.addSlider("ay").setPosition(20, 80).setSize(200, 20).setRange(0, 10).setValue(1);
 	}
 
 	@Override
@@ -39,8 +46,10 @@ public class Clase extends PApplet {
 		beginShape(QUAD);
 		shader(shader);
 		shader.set("offset", offset);
-		shader.set("f", 10);
-		shader.set("A", cp5.getValue("s"));
+		shader.set("fx", sliders.getValue("fx"));
+		shader.set("ax", sliders.getValue("ax"));
+		shader.set("fy", sliders.getValue("fy"));
+		shader.set("ay", sliders.getValue("ay"));
 		offset += 0.1;
 
 		texture(img);
@@ -57,7 +66,7 @@ public class Clase extends PApplet {
 
 		resetShader();
 		scene.beginScreenDrawing();
-		cp5.draw();
+		sliders.draw();
 		scene.endScreenDrawing();
 	}
 
