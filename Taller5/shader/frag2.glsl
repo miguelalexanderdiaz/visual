@@ -14,8 +14,8 @@ void main()
 	float coordY= vertTexCoord.y;
 	
 	if(coordY > 0.68){
-		coordX+= ax * sin(coordY*fx*3.1416+offset)/100;
-		coordY+= ay * sin(coordX*fy*3.1416+offset)/100;
+		coordX+= 2 * sin(coordY*2*3.1416+offset)/100;
+		coordY+= 3 * sin(coordX*3*3.1416+offset)/100;
 		coordY = 2 * 0.68 - coordY;
 	}
 	

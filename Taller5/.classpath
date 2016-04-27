@@ -13,5 +13,7 @@
 	<classpathentry kind="lib" path="../lib/proscene.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="../lib/controlP5/library/controlP5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Estudiante/WS/lib/fisica/library/fisica.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Estudiante/WS/lib/fisica/library/JBox2D-2.0.1-b250-Library.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
